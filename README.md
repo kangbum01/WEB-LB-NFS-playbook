@@ -14,7 +14,7 @@ Ansible Playbook 기반으로 **자동 배포**하기 위해 작성되었습니�
 ---
 
 ## 📂 프로젝트 구조
-
+```yaml
 project/
 ├── site.yml # 메인 플레이북 (모든 role 실행)
 ├── inventory # 인벤토리 (NFS, WEB, LB, DNS 서버 정의)
@@ -25,9 +25,7 @@ project/
 ├── web/ # WEB 서버 role
 ├── lb/ # LB role
 └── leeeeejieun.dns # DNS 서버 role
-
-yaml
-코드 복사
+```
 
 > DNS Role 출처: [Ansible Galaxy – leeeeejieun.dns](https://galaxy.ansible.com/ui/standalone/roles/leeeeejieun/dns/documentation/)
 
