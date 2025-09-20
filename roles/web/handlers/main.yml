@@ -1,0 +1,6 @@
+# roles/web_httpd/handlers/main.yml
+---
+- name: restart httpd
+  ansible.builtin.service:
+    name: httpd
+    state: restarted

@@ -1,0 +1,64 @@
+---
+#####################################################
+# 1) 패키지 설치 - httpd, mod_ssl, nfs-utils, firewalld
+# 2) 서비스 설정 - 마운트 + vhost 배포
+# 3) 서비스 기동 - httpd, firewalld
+# 4) 방화벽 등록 - http, https
+#####################################################
+- name: 1) WEB 서버 & 방화벽 설치
+  ansible.builtin.yum:
+    name:
+      - httpd
+      - mod_ssl
+      - nfs-utils
+      - firewalld
+    state: present
+- name: 2) 서비스 설정 마운트 폴더 생성
+  ansible.builtin.file:
+    path: "{{ nfs_export }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: 2) 서비스 설정 fstab적용
+  ansible.posix.mount:
+    path: "{{ nfs_export }}"
+    src: "{{ nfs_server }}:{{ nfs_export }}"
+    fstype: nfs
+    state: mounted
+
+- name: 2) 서비스 설정 vhost
+  ansible.builtin.template:
+    src: vhost.conf.j2
+    dest: "/etc/httpd/conf.d/vhost.conf"
+    owner: root
+    group: root
+    mode: '0644'
+  loop: "{{ web_vhosts }}"
+  notify: restart httpd
+
+- name: 2) 서비스 설정 SELinux
+  ansible.posix.seboolean:
+    name: httpd_use_nfs
+    state: true
+    persistent: true
+
+- name: 3) 서비스 기동
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  loop:
+    - httpd
+    - firewalld
+
+- name: 4) 방화벽 등록(http/https)
+  ansible.posix.firewalld:
+    service: "{{ item }}"
+    permanent: true
+    immediate: true
+    state: enabled
+  loop:
+    - http
+    - https

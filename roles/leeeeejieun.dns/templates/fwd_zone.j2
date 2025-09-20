@@ -1,0 +1,23 @@
+$TTL 86400
+@   IN SOA ns1.lje.com. root.{{ fwd_zone.name }}. (
+        12      ; serial (수정 시마다 증가)
+        1D      ; refresh
+        1H      ; retry
+        1W      ; expire
+        3H )    ; minimum
+
+;; DNS Servers
+{% for ns in ns_servers %}
+{{ fwd_zone.name }}.   IN  NS  {{ ns.name }}.
+{{ ns.name }}.         IN  A   {{ ns.ip }}
+{% endfor %}
+
+;; LB
+www   IN  A   {{ lb_ip }}
+
+;; WEB
+www1  IN  A   192.168.10.11
+www2  IN  A   192.168.10.14
+
+;; NFS
+nfs   IN  A   192.168.10.10

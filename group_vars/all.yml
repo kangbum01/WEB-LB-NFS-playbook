@@ -1,0 +1,28 @@
+# NFS 설정
+nfs_server: 192.168.10.10
+nfs_export: /www
+nfs_allowed: 192.168.10.0/24
+
+# LB 설정
+lb_ip: 192.168.10.12
+
+# DNS 설정
+ns_servers:
+  - { name: "ns1.lje.com", ip: "192.168.10.11" }
+  - { name: "ns2.lje.com", ip: "192.168.10.14" }
+
+fwd_zone:
+  name: lje.com
+  file: lje.com.zone
+
+rev_zone:
+  name: 10.168.192.in-addr.arpa
+  file: 10.168.192.rev
+
+# LB → WEB
+web_backends:
+  - { name: "web1", ip: "192.168.10.11", port: 80 }
+  - { name: "web2", ip: "192.168.10.14", port: 80 }
+
+web_vhosts:
+  - { name: "vhost-80", port: 80, server_name: "www.lje.com" }

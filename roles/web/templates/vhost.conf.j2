@@ -1,0 +1,18 @@
+<VirtualHost *:{{ item.port }}>
+    ServerName {{ item.server_name }}
+    DocumentRoot {{ nfs_export }}
+
+    ScriptAlias /cgi-bin "{{ nfs_export }}/cgi-bin"
+    <Directory "{{ nfs_export }}">
+        Options Indexes FollowSymLinks
+        Require all granted
+    </Directory>
+    <Directory "{{ nfs_export }}/cgi-bin">
+        Options +ExecCGI
+        AddHandler cgi-script .cgi .sh
+        Require all granted
+    </Directory>
+
+    ErrorLog  /var/log/httpd/app_error_{{ item.port }}.log
+    CustomLog /var/log/httpd/app_access_{{ item.port }}.log combined
+</VirtualHost>

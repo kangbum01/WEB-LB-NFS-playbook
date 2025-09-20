@@ -1,0 +1,16 @@
+$TTL 86400
+@       IN SOA  {{ ns_server.name }}. {{ ns_server.email | default("root." + ns_server.domain) }} (
+                                        11      ; serial
+                                        1D      ; refresh
+                                        1H      ; retry
+                                        1W      ; expire
+                                        3H )    ; minimum
+
+;; DNS Server
+{{ rev_zone.name }}.  IN  NS   {{ ns_server.name }}.
+
+;; PTR Records
+11   IN  PTR  www1.{{ ns_server.domain }}.
+12   IN  PTR  www.{{ ns_server.domain }}.
+14   IN  PTR  www2.{{ ns_server.domain }}.
+10   IN  PTR  nfs.{{ ns_server.domain }}.

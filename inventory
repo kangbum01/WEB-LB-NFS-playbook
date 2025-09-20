@@ -1,0 +1,15 @@
+[lb]
+server3-LB ansible_host=192.168.10.12 
+
+
+[nfs]
+server1-NFS ansible_host=192.168.10.10 
+
+
+[webservers]
+server2-WEB ansible_host=192.168.10.11 
+server4-WEB ansible_host=192.168.10.14
+
+
+[all:vars]
+ansible_user=ansible

@@ -1,0 +1,66 @@
+---
+# DNS 서버 구성을 위한 필수 패키지 설치
+- name: 1) 패키지 설치 - bind, bind-utils, firewalld
+  ansible.builtin.dnf:
+    name: "{{ packages }}"
+    state: present
+
+# DNS 서버의 기본적인 동작을 정의한 설정 파일
+- name: 2) 서비스 설정 - named.conf 정적 파일 배포
+  ansible.builtin.copy:
+    src: named.conf
+    dest: /etc/named.conf
+    owner: root
+    group: named
+    mode: '0640'
+
+# DNS 서버가 관리할 존 파일 지정
+- name: 3) 서비스 설정 - named.rfc1912.zones 템플릿 배포
+  ansible.builtin.template:
+    src: named.rfc1912.zones.j2
+    dest: /etc/named.rfc1912.zones
+    owner: root
+    group: named
+    mode: '0640'
+
+# forward zone 파일 생성 - DNS 서버 레코드 추가
+- name: 4) 서비스 설정 - forward zone 템플릿 배포
+  ansible.builtin.template:
+    src: fwd_zone.j2
+    dest: /var/named/{{ fwd_zone.file }}
+    owner: root
+    group: root
+    mode: '0644'
+
+# reverse zone 파일 생성 - DNS 서버 레코드 추가
+- name: 5) 서비스 설정 - reverse zone 템플릿 배포
+  ansible.builtin.template:
+    src: rev_zone.j2
+    dest: /var/named/{{ rev_zone.file }}
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: 5) 서비스 설정 - resolv.conf 템플릿 배포
+  ansible.builtin.template:
+    src: resolv.conf.j2
+    dest: /etc/resolv.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+# DNS & 방화벽 서비스 기동
+- name: 6) 서비스 기동 - named, firewalld
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  loop: "{{ service }}"
+
+# 외부에서 요청이 들어올 수 있도록 방화벽 등록
+- name: 7) 방화벽 등록 - dns
+  ansible.posix.firewalld:
+    service: "{{ fw_53 }}"
+    permanent: true
+    state: enabled
+    immediate: true

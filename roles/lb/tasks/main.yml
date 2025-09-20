@@ -1,0 +1,45 @@
+---
+#####################################################
+# 1) 패키지 설치 - haproxy, firewalld
+# 2) 서비스 설정 - haproxy.cfg 배포 (+ httpd 충돌 방지)
+# 3) 서비스 기동 - haproxy, firewalld
+# 4) 방화벽 등록 - http
+#####################################################
+- name: 1) 패키지 설치 - haproxy, firewalld
+  ansible.builtin.yum:
+    name:
+      - haproxy
+      - firewalld
+    state: present
+
+- name: 2) 서비스 설정 - 기존 httpd 중지 (충돌 방지)
+  ansible.builtin.service:
+    name: httpd
+    state: stopped
+    enabled: false
+  ignore_errors: true
+
+- name: 2) 서비스 설정 - haproxy.cfg 배포
+  ansible.builtin.template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart haproxy
+
+- name: 3) 서비스 기동 - haproxy, firewalld
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  loop:
+    - haproxy
+    - firewalld
+
+- name: 4) 방화벽 등록 (http)
+  ansible.posix.firewalld:
+    service: http
+    permanent: true
+    immediate: true
+    state: enabled

@@ -1,0 +1,31 @@
+---
+- name: 1) NFS 서버(ansible1)
+  hosts: nfs
+  become: true
+  tasks:
+    - name: NFS 서버 룰 적용
+      ansible.builtin.include_role:
+        name: nfs_server
+
+- name: 2) WEB 서버(ansible2)
+  hosts: webservers
+  become: true
+  tasks:
+    - name: WEB 서버 룰 적용
+      ansible.builtin.include_role:
+        name: web
+
+- name: 2) DNS 설치(ansible2)
+  hosts: webservers
+  become: true
+  tasks:
+    - name: DNS 서버 룰 적용
+      ansible.builtin.include_role:
+        name: leeeeejieun.dns
+- name: 3) 로드밸런서(ansible3)
+  hosts: lb
+  become: true
+  tasks:
+    - name: IB 서버 룰 적용
+      ansible.builtin.include_role:
+        name: lb

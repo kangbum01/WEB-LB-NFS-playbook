@@ -1,0 +1,13 @@
+frontend http_front
+    bind *:80
+    default_backend http_back
+    timeout client 30s
+
+backend http_back
+    balance roundrobin
+    option httpchk GET /
+    timeout connect 5s
+    timeout server 30s
+{% for backend in web_backends %}
+    server {{ backend.name }} {{ backend.ip }}:{{ backend.port }} check inter 2s fall 3 rise 2
+{% endfor %}

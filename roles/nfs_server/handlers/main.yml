@@ -1,0 +1,5 @@
+---
+# handlers file for web_httpd
+- name: 서비스 기동 재시작
+  ansible.builtin.command: exportfs -r
+  changed_when: false

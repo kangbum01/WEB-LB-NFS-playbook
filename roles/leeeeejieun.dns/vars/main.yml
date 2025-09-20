@@ -1,0 +1,11 @@
+---
+packages:
+  - bind
+  - bind-utils
+  - firewalld
+
+service: 
+  - named
+  - firewalld
+
+fw_53: dns

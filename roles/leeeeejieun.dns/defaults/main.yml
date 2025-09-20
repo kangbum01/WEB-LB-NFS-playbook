@@ -1,0 +1,12 @@
+fwd_zone:
+  name: lje.com
+  file: lje.zone
+
+rev_zone:
+  name: 10.168.192.in-addr.arpa
+  file: lje.rev
+
+ns_server:
+  domain: lje.com
+  name: ns1.lje.com
+  ip: 192.168.10.11
