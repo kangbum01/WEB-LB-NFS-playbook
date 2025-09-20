@@ -119,13 +119,11 @@ web_vhosts : Apache VirtualHost 정의
 각 Role은 Ansible Galaxy 표준 구조를 따릅니다.
 배포 시 참고 가능한 Galaxy 링크:
 
-nfs_server
+[nfs_server](https://github.com/kangbum01/ansible-role-nfs)
 
-web_httpd
+[web](https://github.com/kangbum01/ansible-role-web)
 
-haproxy_lb
-
-dns_bind
+[lb](https://github.com/kangbum01/ansible-role-lb)
 
 (📌 실제 등록 후 주소 업데이트 필요)
 
